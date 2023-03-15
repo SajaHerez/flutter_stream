@@ -1,21 +1,24 @@
 import 'dart:async';
 
 class MyStream {
-  final StreamController _streamController = StreamController();
+  final StreamController<int> streamController = StreamController();
 
-
-
-
+   Future<Stream<int>> getSteamData() async {
+    for (var i = 0; i <= 10; i++) {
+      await Future.delayed(const Duration(seconds: 1));
+      streamController.sink.add(i);
+    }
+    return streamController.stream;
+  }
 
   Stream<int> numberStream() async* {
     for (var i = 0; i <= 10; i++) {
-      Future.delayed(const Duration(seconds: 1));
+      await Future.delayed(const Duration(seconds: 1));
       yield i;
     }
   }
 
-
   void cancal() {
-    _streamController.close();
+    streamController.close();
   }
 }
