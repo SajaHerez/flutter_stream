@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'stream/stream_services.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -28,6 +30,20 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final MyStream _myStream = MyStream();
+
+  @override
+  void initState() {
+    _myStream.addStreamData();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _myStream.cancal();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,12 +55,25 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             const Text(
-              'You have pushed the button this many times:',
+              'Here The Steam Data : ',
             ),
             Text(
               '',
               style: Theme.of(context).textTheme.headline4,
             ),
+            StreamBuilder(
+                stream: _myStream.getSteamData(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return const Text("hey there is some error");
+                  } else if (snapshot.connectionState ==
+                      ConnectionState.waiting) {
+                    return const CircularProgressIndicator();
+                  }
+                  return Text(
+                    "${snapshot.data}",
+                  );
+                }),
           ],
         ),
       ),
